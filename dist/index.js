@@ -5,9 +5,49 @@ dotenv.config();
 //  key: fs.readFileSync("/srv/www/keys/my-site-key.pem"),
 //  cert: fs.readFileSync("/srv/www/keys/chain.pem"),
 //};
+if (!(process.env.PORT && process.env.CLIENT_ORIGIN_URL)) {
+    throw new Error("Missing required environment variables. Check docs for more info.");
+}
+const PORT = parseInt(process.env.PORT, 10);
+//let CLIENT_ORIGIN_URL;
+/*
+if (process.env.NODE_ENV === 'production') {
+  CLIENT_ORIGIN_URL = process.env.CLIENT_ORIGIN_URL;
+} else {
+  CLIENT_ORIGIN_URL = process.env.CLIENT_ORIGIN_DEV_URL;
+}
+*/
+//const allowedOrigins = [CLIENT_ORIGIN_URL];
+//console.log(CLIENT_ORIGIN_URL);
 const app = express();
 const port = process.env.PORT;
 let subject = "default_subject";
+app.use(express.json());
+app.set("json spaces", 2);
+app.use((req, res, next) => {
+    res.contentType("application/json; charset=utf-8");
+    next();
+});
+app.use(nocache());
+/*
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) {
+        return callback(null, true);
+      }
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg = `The CORS policy for this site (${origin}) does not allow access from the specified Origin.`;
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
+    //methods: ["GET", "POST"],
+    allowedHeaders: ["Authorization", "Content-Type"],
+    //maxAge: 86400,
+  })
+);
+*/
 app.get("/content", (req, res) => {
     console.log("query: " + JSON.stringify(req.query));
     res.send({ subject: subject });
