@@ -1,0 +1,7 @@
+version: "3"
+services:
+  maxwell:
+    build: .
+    ports:
+      - "1234:2718"
+    container_name: maxwell
